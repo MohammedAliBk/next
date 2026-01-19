@@ -1,35 +1,26 @@
-using Microsoft.EntityFrameworkCore;
-
 var builder = WebApplication.CreateBuilder(args);
 
-// قراءة الـ connection string من env variable
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Add services to the container.
 
-// DbContext setup
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
+builder.Services.AddControllers();
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// اختبار اتصال
-app.MapGet("/", async (AppDbContext db) =>
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    var canConnect = await db.Database.CanConnectAsync();
-    return canConnect ? "Connected to SQL Server!" : "Failed to connect.";
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
 });
 
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
 app.Run();
-
-// EF Core DbContext
-class AppDbContext : DbContext
-{
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-    public DbSet<Item> Items => Set<Item>();
-}
-
-class Item
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = "";
-}
-
