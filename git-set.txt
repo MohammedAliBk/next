@@ -1,0 +1,24 @@
+git clone repo ssh hey ^git@github....etc
+
+git fetch origin
+
+git branch -r
+(you should see somthing like wise:
+  origin/HEAD -> origin/main
+  origin/dev
+  origin/main)
+
+git switch -c dev origin/dev
+
+git branch -vv (
+		* dev  SHA [origin/dev] <commit c>
+    main SHA [origin/main] Merge branch 'dev' into 'main')
+
+add a line to the README.md file
+
+git add README.md
+
+git commit -m "commit massage"
+
+git push -u origin dev
+
