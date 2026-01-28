@@ -57,3 +57,26 @@ _ReSharper*/
 Thumbs.db
 ehthumbs.db
 
+
+
+# .NET Specific Additions
+# -----------------------
+# User-specific files (already partially covered, but ensure these are included)
+[Cc]ommon7/IDE/ProjectComponents/
+
+# Local settings for Web APIs
+appsettings.Development.json
+
+# Secrets manager
+secrets.json
+
+# Testing
+TestResults/
+
+# Entity Framework Core migrations (keep the folder, ignore the design-time cache)
+*.db
+*.db-shm
+*.db-wal
+
+# Specialized tools
+.http

@@ -1,35 +1,51 @@
 using Microsoft.EntityFrameworkCore;
+using System;
+using TodoListAPI.Models.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// قراءة الـ connection string من env variable
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Add services to the container.
 
-// DbContext setup
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
+builder.Services.AddControllers();
+builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddAutoMapper(typeof(Program));
+
+// Add CORS to allow backend to work independently
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+
+builder.Services.AddDbContext<TodoListDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 var app = builder.Build();
 
-// اختبار اتصال
-app.MapGet("/", async (AppDbContext db) =>
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
 {
-    var canConnect = await db.Database.CanConnectAsync();
-    return canConnect ? "Connected to SQL Server!" : "Failed to connect.";
-});
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+
+// Enable CORS
+app.UseCors("AllowAll");
+
+app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
-
-// EF Core DbContext
-class AppDbContext : DbContext
-{
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-    public DbSet<Item> Items => Set<Item>();
-}
-
-class Item
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = "";
-}
-
