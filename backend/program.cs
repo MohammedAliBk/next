@@ -1,35 +1,76 @@
 using Microsoft.EntityFrameworkCore;
+using System;
+using TodoListAPI.Models.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// قراءة الـ connection string من env variable
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Add services to the container.
 
-// DbContext setup
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
+builder.Services.AddControllers();
+builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddAutoMapper(typeof(Program));
+
+// Add CORS to allow backend to work independently
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+
+builder.Services.AddDbContext<TodoListDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 var app = builder.Build();
 
-// اختبار اتصال
-app.MapGet("/", async (AppDbContext db) =>
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
 {
-    var canConnect = await db.Database.CanConnectAsync();
-    return canConnect ? "Connected to SQL Server!" : "Failed to connect.";
-});
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+
+// Enable CORS
+app.UseCors("AllowAll");
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<TodoListDbContext>();
+
+    // Optional: retry logic in case SQL Server is not ready yet
+    var retries = 10;
+    while (retries > 0)
+    {
+        try
+        {
+            db.Database.Migrate();
+            Console.WriteLine("Database migration applied successfully.");
+            break;
+        }
+        catch (Exception ex)
+        {
+            retries--;
+            Console.WriteLine($"Migration failed, retrying... ({10 - retries}/10)");
+            Thread.Sleep(5000); // wait 5 seconds
+            if (retries == 0) throw; // fail finally if SQL never starts
+        }
+    }
+}
 
 app.Run();
-
-// EF Core DbContext
-class AppDbContext : DbContext
-{
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-    public DbSet<Item> Items => Set<Item>();
-}
-
-class Item
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = "";
-}
-

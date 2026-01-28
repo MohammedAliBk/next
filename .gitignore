@@ -1,1 +1,82 @@
-/obj
+# ===========================
+# node modules
+node_modules/
+# build outputs
+build/
+dist/
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# env files
+#.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# editor settings
+.vscode/
+.idea/
+# temp files
+.DS_Store
+
+# ===========================
+# .NET / C# stuff
+# ===========================
+# Build Folders
+bin/
+obj/
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+# Rider/Visual Studio
+.vs/
+# Publish outputs
+publish/
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+# NuGet packages
+*.nupkg
+# Backup & temp files
+*.bak
+*.log
+*.cache
+*.pdb
+*.mdb
+*.pidb
+*.svclog
+
+# ===========================
+# temporary files
+*.tmp
+*.temp
+# OS files
+Thumbs.db
+ehthumbs.db
+
+
+
+# .NET Specific Additions
+# -----------------------
+# User-specific files (already partially covered, but ensure these are included)
+[Cc]ommon7/IDE/ProjectComponents/
+
+# Local settings for Web APIs
+appsettings.Development.json
+
+# Secrets manager
+secrets.json
+
+# Testing
+TestResults/
+
+# Entity Framework Core migrations (keep the folder, ignore the design-time cache)
+*.db
+*.db-shm
+*.db-wal
+
+# Specialized tools
+.http

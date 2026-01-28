@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
 # COPY the csproj and restore dependencies
-COPY myapi.csproj ./
+COPY TodoListAPI.csproj ./
 RUN dotnet restore
 
 # COPY the rest of the code
@@ -15,5 +15,5 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 COPY --from=build /app/publish .
 EXPOSE 8080
-ENTRYPOINT ["dotnet", "myapi.dll"]
+ENTRYPOINT ["dotnet", "TodoListAPI.dll"]
 
