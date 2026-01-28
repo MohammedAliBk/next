@@ -48,4 +48,29 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<TodoListDbContext>();
+
+    // Optional: retry logic in case SQL Server is not ready yet
+    var retries = 10;
+    while (retries > 0)
+    {
+        try
+        {
+            db.Database.Migrate();
+            Console.WriteLine("Database migration applied successfully.");
+            break;
+        }
+        catch (Exception ex)
+        {
+            retries--;
+            Console.WriteLine($"Migration failed, retrying... ({10 - retries}/10)");
+            Thread.Sleep(5000); // wait 5 seconds
+            if (retries == 0) throw; // fail finally if SQL never starts
+        }
+    }
+}
+
 app.Run();
