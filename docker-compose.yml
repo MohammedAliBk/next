@@ -2,7 +2,7 @@
 
 services:
   frontend:
-    build: ./frontend
+    build: ./frontend/todo-next
     container_name: react-frontend
     ports:
       - "3000:80"
