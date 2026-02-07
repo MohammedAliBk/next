@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { Plus } from "lucide-react";
 
 function AddTaskForm() {
   const [isOpen, setisOpen] = useState(false);
@@ -15,9 +16,9 @@ function AddTaskForm() {
       {/* add button */}
       <button
         onClick={() => setisOpen(true)}
-        className="fixed bottom-10 right-10 w-14 h-14 rounded-full bg-purple-600 text-white text-3xl shadow-lg hover:scale-110 transition"
+        className="fixed bottom-10 right-10 w-14 h-14 rounded-full bg-purple-600 text-white flex items-center justify-center shadow-lg hover:scale-110 transition"
       >
-        +
+        <Plus size={28}/>
       </button>
       {/* Input Model */}
       {isOpen && (
