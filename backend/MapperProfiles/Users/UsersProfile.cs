@@ -8,9 +8,9 @@
     {
         public UsersProfile()
         {
-            CreateMap<SetUserInfo, User>();
+            CreateMap<RegisterUserDto, User>();
             CreateMap<UpdateUserInfo, User>();
-            CreateMap<User, GetUserInfo>();
+            CreateMap<User, UserResponseDto>();
         }
     }
 }

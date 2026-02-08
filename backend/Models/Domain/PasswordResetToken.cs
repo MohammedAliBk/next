@@ -1,18 +1,14 @@
 namespace TodoListAPI.Models.Domain
 {
-    public class Section
+    public class PasswordResetToken
     {
         public Guid Id { get; set; }
-
-        public string SectionName { get; set; } = null!;
-        public string? Note { get; set; }
-
+        public string Token { get; set; } = null!;
         public Guid UserId { get; set; }
         public User User { get; set; } = null!;
 
         public DateTime CreatedAt { get; set; }
-
-        public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
+        public DateTime ExpiresAt { get; set; }
+        public bool Used { get; set; }
     }
-
 }
